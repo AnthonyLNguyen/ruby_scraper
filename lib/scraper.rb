@@ -3,11 +3,22 @@ require 'Nokogiri'
 require 'openssl'
 
 class Scraper
+	# shortcut for writing
+	#
+	# def parser=(val)
+	#  	@parser = val
+	# end
+	#
+  # def parser
+	#  	@parser
+	# end
+	#
 	attr_accessor :parser
 
 	def initialize
 		page = HTTParty.get("http://www.cpp.edu/events/")
-		#use @ for instance variable which is avaible to all methods in the class
+		# use @ for instance variable which is avaible to all methods in the class
+		# a ||= b is equivalent to a || a = b
 		@parser ||= Nokogiri::HTML(page)
 	end
 
