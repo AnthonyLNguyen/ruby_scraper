@@ -9,7 +9,7 @@ class Scraper
 	#  	@parser = val
 	# end
 	#
-  # def parser
+	# def parser
 	#  	@parser
 	# end
 	#
