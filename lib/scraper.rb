@@ -3,29 +3,30 @@ require 'Nokogiri'
 require 'openssl'
 
 class Scraper
-	attr_accessor :parse_page
+	attr_accessor :parser
 
 	def initialize
-		doc = HTTParty.get("http://www.cpp.edu/events/")
-		@parse_page ||= Nokogiri::HTML(doc)
+		page = HTTParty.get("http://www.cpp.edu/events/")
+		#use @ for instance variable which is avaible to all methods in the class
+		@parser ||= Nokogiri::HTML(page)
+	end
+
+	#Define container to search through
+	def container
+		parser.css(".event-intro")
 	end
 
 	def get_events
 		# compact removes all instances of nil in the array
-		events = item_container.css(".padding").css("h3").children.map { |event| event.text }.compact
+		events = container.css(".padding").css("h3").children.map { |event| event.text }.compact
 	end
 
 	def get_date
-		dates = item_container.css(".padding").css("h4").children.map { |date| date.text }.compact
+		dates = container.css(".padding").css("h4").children.map { |date| date.text }.compact
 	end
 
 	def get_info
-		infos = item_container.css(".padding").css("p").children.map { |info| info.text }.compact
-	end
-
-
-	def item_container
-		parse_page.css(".event-intro")
+		infos = container.css(".padding").css("p").children.map { |info| info.text }.compact
 	end
 
 	scraper = Scraper.new
