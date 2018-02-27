@@ -10,16 +10,17 @@ class Scraper
 		@parse_page ||= Nokogiri::HTML(doc)
 	end
 
-	def get_cal
-		cals = item_container.css(".padding").css("h3").children.map { |cal| cal.text }.compact
+	def get_events
+		# compact removes all instances of nil in the array
+		events = item_container.css(".padding").css("h3").children.map { |event| event.text }.compact
 	end
 
 	def get_date
-		dates = item_container.css(".padding").css("h4").children.map { |cal| cal.text }.compact
+		dates = item_container.css(".padding").css("h4").children.map { |date| date.text }.compact
 	end
 
 	def get_info
-		infos = item_container.css(".padding").css("p").children.map { |cal| cal.text }.compact
+		infos = item_container.css(".padding").css("p").children.map { |info| info.text }.compact
 	end
 
 
@@ -28,14 +29,14 @@ class Scraper
 	end
 
 	scraper = Scraper.new
-	cals = scraper.get_cal
+	events = scraper.get_events
 	dates = scraper.get_date
 	infos = scraper.get_info
 
-
-	(0...cals.size).each do |index|
-		puts "===== Event: #{index+1} ====="
-		puts "Event: #{cals[index]}"
+	# loop from 0 to events size
+	(0...events.size).each do |index|
+		puts "\n===== Event: #{index+1} ====="
+		puts "Event: #{events[index]}"
 		puts "Date: #{dates[index]}"
 		puts "Info: #{infos[index]}"
 	end
