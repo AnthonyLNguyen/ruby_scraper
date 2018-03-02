@@ -49,7 +49,7 @@ container = lambda do
     while elements.empty?
         attempts += 1
         if attempts > 10
-            puts "Scraping failed - check the URL or tags"
+            puts "Scraping failed - check your tags"
             break
         end
         outer = Container.new
