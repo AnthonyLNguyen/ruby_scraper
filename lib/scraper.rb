@@ -16,22 +16,14 @@ class Container
 	#
     attr_accessor :parser
 
-    def initialize
-		url = HTTParty.get(ARGV[0])
+    def initialize(url)
+		url = HTTParty.get(url)
+        # only replace if null
 		@parser ||= Nokogiri::HTML(url)
-        @inners = []
     end
-    def add_inner(inner)
-        @inners << inner
-    end
-    def get_next(inner)
-        @outer.css(inner)
-    end
-    def get_element
-        parse_tags(ARGV[1])
-    end
-    def parse_tags(tag)
-        arr = tag.split(" ")
+    
+    def parse_tags(tags)
+        arr = tags.split(" ")
         result = parser.css(arr[0])
         arr.each do|a|
             result = result.css(a)
@@ -43,26 +35,21 @@ end
 puts ARGV[0]
 
 #Define container to search through
-container = lambda do 
-    elements = []
-    attempts = 0
-    while elements.empty?
-        attempts += 1
-        if attempts > 10
-            puts "Scraping failed - check the URL or tags"
-            break
-        end
-        outer = Container.new
-        elements = outer.get_element.children.map { |elements| elements.text }.compact
+elements = []
+attempts = 0
+while elements.empty?
+    attempts += 1
+    if attempts > 20
+        puts "Scraping failed - check arguments or try again"
+        break
     end
-    return elements
+    elements = Container.new(ARGV[0]).parse_tags(ARGV[1]).children.map { |elements| elements.text }.compact
 end
     
-texts = container.call
 
 # loop from 0 to events size
-(0...texts.size).each do |index|
-	puts "\n===== Element: #{index+1} ====="
-	puts "#{texts[index]}"
+(0...elements.size).each do |index|
+	puts "\n===== Instance: #{index+1} ====="
+	puts "#{elements[index]}"
 end
 
